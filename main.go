@@ -44,4 +44,23 @@ func main() {
 	}
 	fmt.Println("    Login:", query.Viewer.Login)
 	fmt.Println("CreatedAt:", query.Viewer.CreatedAt)
+
+	var q struct {
+		User struct {
+			Repositories struct {
+				TotalCount githubv4.Int
+			}
+		} `graphql:"user(login: $loginName)"`
+	}
+
+	variables := map[string]interface{}{
+		"loginName": githubv4.String(query.Viewer.Login),
+	}
+
+	err = client.Query(context.Background(), &q, variables)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println("Repositories.TotalCount:", q.User.Repositories.TotalCount)
 }
