@@ -49,7 +49,10 @@ func main() {
 		User struct {
 			Repositories struct {
 				TotalCount githubv4.Int
-			}
+				Nodes      []struct {
+					Name githubv4.String
+				}
+			} `graphql:"repositories(first: 100)"`
 		} `graphql:"user(login: $loginName)"`
 	}
 
@@ -63,4 +66,8 @@ func main() {
 	}
 
 	fmt.Println("Repositories.TotalCount:", q.User.Repositories.TotalCount)
+	fmt.Println("Repositories.Nodes")
+	for _, node := range q.User.Repositories.Nodes {
+		fmt.Println("Repositories.Nodes.Name", node.Name)
+	}
 }
